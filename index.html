@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PingFlow — WhatsApp Automation for Local Businesses</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0A0A0A;
+      --white: #F7F7F5;
+      --green: #25D366;
+      --green-dim: #1aab50;
+      --accent: #00E5A0;
+      --gray: #6B6B6B;
+      --card-bg: #131313;
+      --border: #222222;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: -0.5px;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent); }
+
+    nav a.cta-small {
+      background: var(--green);
+      color: #000;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    nav a.cta-small:hover { background: var(--green-dim); }
+
+    /* HERO */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 5rem 2rem 4rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    .eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.5rem;
+      color: var(--white);
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--gray);
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.85rem 1.8rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary:hover { background: var(--green-dim); transform: translateY(-1px); }
+
+    .btn-secondary {
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.85rem 1.8rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* CHAT DEMO — signature element */
+    .demo-section {
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem;
+    }
+
+    .demo-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .demo-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .demo-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.9rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .demo-desc {
+      color: var(--gray);
+      font-size: 0.97rem;
+      line-height: 1.7;
+    }
+
+    /* WhatsApp Chat UI */
+    .chat-window {
+      background: #111;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+
+    .chat-header {
+      background: #1a1a1a;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .chat-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .chat-name { font-weight: 600; font-size: 0.9rem; }
+    .chat-status { font-size: 0.72rem; color: var(--accent); }
+
+    .chat-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      background: #0e0e0e;
+      min-height: 220px;
+    }
+
+    .msg {
+      max-width: 80%;
+      padding: 0.5rem 0.8rem;
+      border-radius: 10px;
+      line-height: 1.5;
+      font-size: 0.84rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .msg-in {
+      background: #1e1e1e;
+      color: var(--white);
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+
+    .msg-out {
+      background: #005C4B;
+      color: var(--white);
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .msg-time {
+      font-size: 0.68rem;
+      color: var(--gray);
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SERVICES */
+    .services {
+      padding: 5rem 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 3rem;
+      line-height: 1.15;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.6rem;
+      transition: border-color 0.2s;
+    }
+
+    .service-card:hover { border-color: var(--accent); }
+
+    .service-icon {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .service-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-desc {
+      color: var(--gray);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    /* HOW IT WORKS */
+    .how {
+      background: var(--card-bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 5rem 2rem;
+    }
+
+    .how-inner {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 3rem;
+      position: relative;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 1.2rem;
+      padding-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .step:last-child { padding-bottom: 0; }
+
+    .step-num {
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--accent);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      background: var(--card-bg);
+    }
+
+    .step:not(:last-child) .step-num::after {
+      content: '';
+      position: absolute;
+      top: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: calc(100% + 2.5rem - 48px);
+      background: var(--border);
+    }
+
+    .step-content { padding-top: 0.6rem; }
+
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .step-desc {
+      color: var(--gray);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    /* CONTACT */
+    .contact {
+      padding: 5rem 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .contact-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .contact-info h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.8rem;
+      line-height: 1.2;
+    }
+
+    .contact-info p {
+      color: var(--gray);
+      font-size: 0.92rem;
+      margin-bottom: 1.8rem;
+      line-height: 1.7;
+    }
+
+    .contact-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.9rem;
+      font-size: 0.9rem;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .contact-detail:hover { color: var(--accent); }
+
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .contact-right {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .contact-right p {
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-bottom: 0.4rem;
+    }
+
+    .contact-wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--green);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.85rem 1.6rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s;
+      width: fit-content;
+    }
+
+    .contact-wa-btn:hover { background: var(--green-dim); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.8rem;
+    }
+
+    footer span { color: var(--accent); }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .demo-inner { grid-template-columns: 1fr; }
+      .contact-box { grid-template-columns: 1fr; }
+      h1 { font-size: 2.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Ping<span>Flow</span></a>
+  <a href="#contact" class="cta-small">Get in Touch</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">WhatsApp Automation</div>
+  <h1>Your business,<br/>running on <em>autopilot.</em></h1>
+  <p class="hero-sub">PingFlow builds intelligent WhatsApp automations for local businesses — so you stop missing customers and start focusing on what actually matters.</p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.118 1.528 5.855L.057 23.077a.75.75 0 0 0 .92.92l5.233-1.47A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.695-.505-5.24-1.385l-.374-.217-3.876 1.088 1.088-3.867-.224-.383A9.955 9.955 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      Book a Free Demo
+    </a>
+    <a href="#services" class="btn-secondary">See What We Do</a>
+  </div>
+</section>
+
+<!-- CHAT DEMO -->
+<section class="demo-section">
+  <div class="demo-inner">
+    <div>
+      <div class="demo-label">Live Example</div>
+      <h2 class="demo-heading">Customers ask.<br/>Your bot answers — instantly.</h2>
+      <p class="demo-desc">Appointment bookings, product queries, order status, follow-ups — all handled automatically on WhatsApp, 24/7. No extra staff. No missed messages.</p>
+    </div>
+    <div class="chat-window">
+      <div class="chat-header">
+        <div class="chat-avatar">🏪</div>
+        <div>
+          <div class="chat-name">Vision Care Opticals</div>
+          <div class="chat-status">● Online</div>
+        </div>
+      </div>
+      <div class="chat-body">
+        <div class="msg msg-in">Hi, do you have anti-glare lenses available?</div>
+        <div class="msg msg-out">
+          Yes! We have anti-glare lenses starting from ₹800. Available in single vision and bifocal. Would you like to book an eye test first? 👓
+          <div class="msg-time">10:32 AM ✓✓</div>
+        </div>
+        <div class="msg msg-in">Yes, book me for tomorrow.</div>
+        <div class="msg msg-out">
+          Sure! Your appointment is confirmed for tomorrow at 11:00 AM. We'll send a reminder an hour before. See you then! 🗓️
+          <div class="msg-time">10:33 AM ✓✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-label">What We Build</div>
+  <h2 class="section-heading">Automation that works<br/>while you don't.</h2>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">📅</div>
+      <div class="service-title">Appointment Booking</div>
+      <p class="service-desc">Customers book slots directly over WhatsApp. No calls, no back-and-forth. Automatically logged and confirmed.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔔</div>
+      <div class="service-title">Follow-up Reminders</div>
+      <p class="service-desc">Auto-send reminders before appointments and follow-ups after visits. Reduce no-shows without lifting a finger.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📦</div>
+      <div class="service-title">Product & Order FAQs</div>
+      <p class="service-desc">Customers ask about stock, prices, and availability. The bot answers instantly from your catalog — 24/7.</p>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">⚙️</div>
+      <div class="service-title">Custom Automations</div>
+      <p class="service-desc">Have a specific workflow in mind? We build tailored automation flows for your business — beyond just chatbots.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="how-inner">
+    <div class="section-label">Process</div>
+    <h2 class="section-heading">Up and running<br/>in days, not months.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">We understand your business</div>
+          <p class="step-desc">A quick call to understand your workflow, pain points, and what you want automated. No tech knowledge needed from your end.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">We build and show you a demo</div>
+          <p class="step-desc">We build a working prototype specific to your business and show you exactly how it works before you commit to anything.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">We go live on your WhatsApp</div>
+          <p class="step-desc">Once you're happy, we connect the automation to your existing WhatsApp number. Your customers won't notice a thing — except faster replies.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="section-label">Contact</div>
+  <div class="contact-box">
+    <div class="contact-info">
+      <h2>Let's talk about your business.</h2>
+      <p>Whether you run an optical shop, clinic, or any local business — if you're handling customer queries manually, we can save you hours every week.</p>
+      <a href="mailto:pushkarr.1117@gmail.com" class="contact-detail">
+        <div class="contact-icon">✉️</div>
+        pushkarr.1117@gmail.com
+      </a>
+      <a href="tel:+917876627608" class="contact-detail">
+        <div class="contact-icon">📞</div>
+        +91 78766 27608
+      </a>
+    </div>
+    <div class="contact-right">
+      <p>Prefer WhatsApp? Message us directly.</p>
+      <a href="https://wa.me/917876627608?text=Hi%2C%20I%27m%20interested%20in%20WhatsApp%20automation%20for%20my%20business." class="contact-wa-btn" target="_blank">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.118 1.528 5.855L.057 23.077a.75.75 0 0 0 .92.92l5.233-1.47A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.907 0-3.695-.505-5.24-1.385l-.374-.217-3.876 1.088 1.088-3.867-.224-.383A9.955 9.955 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Message on WhatsApp
+      </a>
+      <p style="margin-top:1rem;">We typically respond within a few hours.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 <span>PingFlow</span> — WhatsApp Automation for Local Businesses</p>
+</footer>
+
+</body>
+</html>
